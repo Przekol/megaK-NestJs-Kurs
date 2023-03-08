@@ -26,4 +26,8 @@ export class ShopService {
   hasProducts(name: string): boolean {
     return this.getProducts().some((item) => item.name === name);
   }
+
+  getPriceOfProduct(name: string): number {
+    return this.getProducts().find((item) => item.name === name).price;
+  }
 }

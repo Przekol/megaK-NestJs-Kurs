@@ -14,3 +14,10 @@ export interface RemoveProductFromBasketResponse {
 }
 
 export type ListProductFromBasketResponse = AddProductDto[];
+
+export type GetTotalPriceResponse =
+  | number
+  | {
+      isSuccess: false;
+      alternativeBasket: AddProductDto[];
+    };
