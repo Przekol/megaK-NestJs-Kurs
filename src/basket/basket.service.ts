@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AddProductDto } from './dto/add-product.dto';
 import { AddProductToBasketResponse } from '../types';
+import { ShopService } from '../shop/shop.service';
 
 @Injectable()
 export class BasketService {
+  constructor(@Inject(ShopService) private readonly shopService: ShopService) {}
   private items: Product[] = [];
 
   add(item: AddProductDto): AddProductToBasketResponse {
@@ -12,7 +14,8 @@ export class BasketService {
       typeof name !== 'string' ||
       typeof count !== 'number' ||
       name === '' ||
-      count < 1
+      count < 1 ||
+      !this.shopService.hasProducts(name)
     ) {
       return {
         isSuccess: false,

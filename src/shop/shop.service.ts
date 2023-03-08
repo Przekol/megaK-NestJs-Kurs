@@ -22,4 +22,8 @@ export class ShopService {
       },
     ];
   }
+
+  hasProducts(name: string): boolean {
+    return this.getProducts().some((item) => item.name === name);
+  }
 }
