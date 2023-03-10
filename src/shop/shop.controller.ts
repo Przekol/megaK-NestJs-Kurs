@@ -14,6 +14,14 @@ import { ShopService } from './shop.service';
   host: ':name.lvh.me',
 })
 export class ShopController {
+  onApplicationBootstrap() {
+    console.log('Załadowane');
+  }
+
+  onApplicationShutdown() {
+    console.log('Apka zaraz zniknie');
+  }
+
   constructor(@Inject(ShopService) private readonly shopService: ShopService) {}
   @Get('/')
   getListOfProducts(): GetListOfProductsResponse {
