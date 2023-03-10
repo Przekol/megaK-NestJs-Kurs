@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ShopItem } from './types';
+import { BasketService } from '../basket/basket.service';
 
 @Injectable()
 export class ShopService {
+  constructor(
+    @Inject(forwardRef(() => BasketService))
+    private readonly basketService: BasketService,
+  ) {}
   getProducts(): ShopItem[] {
     return [
       {
@@ -13,12 +18,12 @@ export class ShopService {
       {
         name: 'Ogórki Super',
         description: 'Jeszcze lepsze ogórki',
-        price: 6,
+        price: 6 - this.basketService.countPromo(),
       },
       {
         name: 'Ogórki afrykańskie',
         description: 'Ogórki z dalekiej krainy',
-        price: 8,
+        price: 8 - this.basketService.countPromo(),
       },
     ];
   }
