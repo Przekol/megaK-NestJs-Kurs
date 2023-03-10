@@ -5,13 +5,14 @@ import {
   Inject,
   Param,
   Redirect,
+  Scope,
 } from '@nestjs/common';
 import { GetListOfProductsResponse } from '../types';
 import { ShopService } from './shop.service';
 
 @Controller({
   path: '/shop',
-  host: ':name.lvh.me',
+  scope: Scope.REQUEST,
 })
 export class ShopController {
   onApplicationBootstrap() {

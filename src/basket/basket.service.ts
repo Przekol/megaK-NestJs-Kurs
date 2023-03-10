@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Scope } from '@nestjs/common';
 import { AddProductDto } from './dto/add-product.dto';
 import {
   AddProductToBasketResponse,
@@ -7,7 +7,7 @@ import {
 } from '../types';
 import { ShopService } from '../shop/shop.service';
 
-@Injectable()
+@Injectable({scope:Scope.REQUEST})
 export class BasketService {
   constructor(
     @Inject(forwardRef(() => ShopService))
