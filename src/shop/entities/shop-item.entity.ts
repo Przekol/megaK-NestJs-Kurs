@@ -1,8 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ShopItemEntity } from '../types';
 
 @Entity()
-export class ShopItem {
-  @PrimaryGeneratedColumn()
+export class ShopItem implements ShopItemEntity {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({

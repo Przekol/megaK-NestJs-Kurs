@@ -1,3 +1,3 @@
-import { ShopItem } from '../../shop/types';
+import { ShopItemEntity } from '../../shop/types';
 
-export type GetListOfProductsResponse = ShopItem[];
+export type GetListOfProductsResponse = ShopItemEntity[];

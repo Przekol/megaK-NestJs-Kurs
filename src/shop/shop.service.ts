@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { ShopItem } from './types';
+import { ShopItemEntity } from './types';
 import { BasketService } from '../basket/basket.service';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class ShopService {
     @Inject(forwardRef(() => BasketService))
     private readonly basketService: BasketService,
   ) {}
-  getProducts(): ShopItem[] {
+  getProducts(): ShopItemEntity[] {
     return [
       {
         name: 'Ogórki kiszone',
