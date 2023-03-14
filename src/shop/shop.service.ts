@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { ShopItemEntity } from './types';
+
 import { BasketService } from '../basket/basket.service';
+import { ShopItemEntity } from '../types';
 
 @Injectable()
 export class ShopService {

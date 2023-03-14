@@ -4,10 +4,11 @@ import {
   AddProductToBasketResponse,
   GetTotalPriceResponse,
   ListProductFromBasketResponse,
+  Product,
 } from '../types';
 import { ShopService } from '../shop/shop.service';
 
-@Injectable({scope:Scope.REQUEST})
+@Injectable({ scope: Scope.REQUEST })
 export class BasketService {
   constructor(
     @Inject(forwardRef(() => ShopService))
