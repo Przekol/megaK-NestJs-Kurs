@@ -4,7 +4,6 @@ import {
   AddProductToBasketResponse,
   GetTotalPriceResponse,
   ListProductFromBasketResponse,
-  Product,
 } from '../types';
 import { ShopService } from '../shop/shop.service';
 
@@ -14,23 +13,24 @@ export class BasketService {
     @Inject(forwardRef(() => ShopService))
     private readonly shopService: ShopService,
   ) {}
-  private items: Product[] = [];
+  private items: AddProductDto[] = [];
 
-  add(item: AddProductDto): AddProductToBasketResponse {
-    const { name, count } = item;
+  async add(item: AddProductDto): Promise<AddProductToBasketResponse> {
+    const { count, name, id } = item;
     if (
       typeof name !== 'string' ||
       typeof count !== 'number' ||
       name === '' ||
       count < 1 ||
-      !this.shopService.hasProducts(name)
+      !(await this.shopService.hasProduct(name))
     ) {
       return {
         isSuccess: false,
       };
     }
-
     this.items.push(item);
+
+    await this.shopService.addBoughtCounter(id);
 
     return {
       isSuccess: true,
@@ -51,23 +51,27 @@ export class BasketService {
     return this.items;
   }
 
-  getTotalPrice(): GetTotalPriceResponse {
-    if (!this.items.every((item) => this.shopService.hasProducts(item.name))) {
+  async getTotalPrice(): Promise<GetTotalPriceResponse> {
+    if (!this.items.every((item) => this.shopService.hasProduct(item.name))) {
       const alternativeBasket = this.items.filter((item) =>
-        this.shopService.hasProducts(item.name),
+        this.shopService.hasProduct(item.name),
       );
       return { isSuccess: false, alternativeBasket };
     }
 
-    return this.items
-      .map(
-        (item) =>
-          this.shopService.getPriceOfProduct(item.name) * item.count * 1.23,
+    return (
+      await Promise.all(
+        this.items.map(
+          async (item) =>
+            (await this.shopService.getPriceOfProduct(item.name)) *
+            item.count *
+            1.23,
+        ),
       )
-      .reduce((prev, curr) => prev + curr, 0);
+    ).reduce((prev, curr) => prev + curr, 0);
   }
 
-  countPromo(): number {
-    return this.getTotalPrice() > 10 ? 1 : 0;
+  async countPromo(): Promise<number> {
+    return (await this.getTotalPrice()) > 10 ? 1 : 0;
   }
 }

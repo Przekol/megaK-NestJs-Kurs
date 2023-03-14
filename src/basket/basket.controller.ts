@@ -23,7 +23,9 @@ export class BasketController {
     @Inject(BasketService) private readonly basketService: BasketService,
   ) {}
   @Post('/')
-  addProductToBasket(@Body() item: AddProductDto): AddProductToBasketResponse {
+  addProductToBasket(
+    @Body() item: AddProductDto,
+  ): Promise<AddProductToBasketResponse> {
     return this.basketService.add(item);
   }
 
@@ -40,7 +42,7 @@ export class BasketController {
   }
 
   @Get('/total-price')
-  getTotalPrice(): GetTotalPriceResponse {
+  getTotalPrice(): Promise<GetTotalPriceResponse> {
     return this.basketService.getTotalPrice();
   }
 }
