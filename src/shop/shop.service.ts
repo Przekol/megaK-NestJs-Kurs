@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 
 import { BasketService } from '../basket/basket.service';
-import { ShopItemEntity } from '../types';
+import { GetPaginatedListOfProductsResponse, ShopItemEntity } from '../types';
 import { ShopItem } from './entities/shop-item.entity';
 
 @Injectable()
@@ -10,16 +10,31 @@ export class ShopService {
     @Inject(forwardRef(() => BasketService))
     private readonly basketService: BasketService,
   ) {}
-  async getProducts(): Promise<ShopItemEntity[]> {
-    return await ShopItem.find();
+  async getProducts(
+    currentPage: number = 1,
+  ): Promise<GetPaginatedListOfProductsResponse> {
+    const maxPerPage = 5;
+
+    const [items, count] = await ShopItem.findAndCount({
+      skip: maxPerPage * (currentPage - 1),
+      take: maxPerPage,
+    });
+
+    const pagesCount = Math.ceil(count / maxPerPage);
+
+    return {
+      items,
+      pagesCount,
+    };
   }
 
   async hasProduct(name: string): Promise<boolean> {
-    return (await this.getProducts()).some((item) => item.name === name);
+    return (await this.getProducts()).items.some((item) => item.name === name);
   }
 
   async getPriceOfProduct(name: string): Promise<number> {
-    return (await this.getProducts()).find((item) => item.name === name).price;
+    return (await this.getProducts()).items.find((item) => item.name === name)
+      .price;
   }
 
   async getOneProduct(id: string): Promise<ShopItem> {
@@ -49,5 +64,18 @@ export class ShopService {
     const item = await ShopItem.findOneOrFail({ where: { id } });
     item.boughtCounter++;
     await item.save();
+  }
+
+  async findProducts(searchTerm: string): Promise<ShopItemEntity[]> {
+    console.log(searchTerm);
+    return await ShopItem.find({
+      select: ['id', 'price'],
+      where: {
+        name: searchTerm,
+      },
+      order: {
+        price: 'ASC',
+      },
+    });
   }
 }
