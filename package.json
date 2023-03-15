@@ -20,8 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
     "typeorm:run-migrations": "npm run typeorm migration:run -- -d ./src/database/typeorm.config.ts",
-    "typeorm:generate-migration": "npm run typeorm -- -d ./src/database/typeorm.config.ts migration:generate ./migrations/nazwaMigracji",
-    "typeorm:create-migration": "npm run typeorm -- migration:create ./migrations/nazwaMigracji",
+    "typeorm:generate-migration": "cross-env npm run typeorm -- -d ./src/database/typeorm.config.ts migration:generate ./migrations/%npm_config_name%",
+    "typeorm:create-migration": "cross-env npm run typeorm -- migration:create ./migrations/%npm_config_name%",
     "typeorm:revert-migration": "npm run typeorm -- -d ./src/database/typeorm.config.ts migration:revert"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
+    "cross-env": "^7.0.3",
     "mysql2": "^3.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
