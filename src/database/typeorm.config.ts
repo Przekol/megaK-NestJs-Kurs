@@ -1,15 +1,14 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { ShopItem } from '../shop/entities/shop-item.entity';
+import { nazwaMigracji1678869681416 } from '../../migrations/1678869681416-nazwaMigracji';
 
-export const typeormConfig = {
+export default new DataSource({
   type: 'mysql',
   host: 'localhost',
   port: 3306,
   username: 'root',
   password: '',
   database: 'megak_nestjs_kurs',
-  bigNumberStrings: false,
-  entities: [],
-  autoLoadEntities: true,
-  synchronize: true,
-  logging: true,
-} satisfies TypeOrmModuleOptions;
+  entities: [ShopItem],
+  migrations: [nazwaMigracji1678869681416],
+});

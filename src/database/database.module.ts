@@ -1,8 +1,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeormConfig } from './typeorm.config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeormConfig)],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: '',
+      database: 'megak_nestjs_kurs',
+      bigNumberStrings: false,
+      entities: [],
+      autoLoadEntities: true,
+      synchronize: false,
+      logging: true,
+    }),
+  ],
 })
 export class DatabaseModule {}
