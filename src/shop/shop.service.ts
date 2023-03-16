@@ -3,6 +3,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { BasketService } from '../basket/basket.service';
 import { GetPaginatedListOfProductsResponse, ShopItemEntity } from '../types';
 import { ShopItem } from './entities/shop-item.entity';
+import { ShopItemDetails } from './entities/shop-item-details.entity';
 
 @Injectable()
 export class ShopService {
@@ -16,6 +17,7 @@ export class ShopService {
     const maxPerPage = 5;
 
     const [items, count] = await ShopItem.findAndCount({
+      relations: ['details', 'sets'],
       skip: maxPerPage * (currentPage - 1),
       take: maxPerPage,
     });
@@ -53,6 +55,13 @@ export class ShopService {
 
     await newItem.save();
 
+    const details = new ShopItemDetails();
+    details.color = 'green';
+    details.width = 20;
+    await details.save();
+
+    newItem.details = details;
+    await newItem.save();
     return newItem;
   }
 
