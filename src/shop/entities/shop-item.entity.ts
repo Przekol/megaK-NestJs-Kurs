@@ -6,15 +6,9 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  ManyToMany,
-  JoinTable,
 } from 'typeorm';
 import { ShopItemEntity } from '../../types';
-import { ShopItemDetails } from './shop-item-details.entity';
-import { ShopSet } from './shop-set.entity';
+import { ItemInBasket } from '../../basket/entities/item-in-basket.entity';
 
 @Entity()
 export class ShopItem extends BaseEntity implements ShopItemEntity {
@@ -22,48 +16,24 @@ export class ShopItem extends BaseEntity implements ShopItemEntity {
   id: string;
 
   @Column({
-    length: 40,
+    length: 50,
   })
   name: string;
 
   @Column({
-    length: 100,
-    nullable: true,
+    length: 1000,
   })
   description: string;
 
   @Column({
     type: 'float',
-    precision: 6,
+    precision: 7,
     scale: 2,
   })
   price: number;
 
-  @Column({
-    default: 0,
-  })
-  boughtCounter: number;
-
-  @Column({
-    default: false,
-  })
-  wasEverBought: boolean;
-
-  @OneToOne((type) => ShopItemDetails)
-  @JoinColumn()
-  details: ShopItemDetails;
-
-  /*  SubProduct   */
-  @ManyToOne((type) => ShopItem, (entity) => entity.subShopItem)
-  mainShopItem: ShopItem;
-
-  /* Produkt główny */
-  @OneToMany((type) => ShopItem, (entity) => entity.mainShopItem)
-  subShopItem: ShopItem[];
-
-  @ManyToMany((type) => ShopSet, (entity) => entity.items)
-  @JoinTable()
-  sets: ShopSet[];
+  @OneToOne((type) => ItemInBasket, (entity) => entity.shopItem)
+  itemInBasket: ItemInBasket;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
