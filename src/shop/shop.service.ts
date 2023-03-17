@@ -4,12 +4,14 @@ import { BasketService } from '../basket/basket.service';
 import { GetPaginatedListOfProductsResponse, ShopItemEntity } from '../types';
 import { ShopItem } from './entities/shop-item.entity';
 import { ShopItemDetails } from './entities/shop-item-details.entity';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class ShopService {
   constructor(
     @Inject(forwardRef(() => BasketService))
     private readonly basketService: BasketService,
+    private readonly dataSource: DataSource,
   ) {}
   async getProducts(
     currentPage: number = 1,
@@ -76,15 +78,22 @@ export class ShopService {
   }
 
   async findProducts(searchTerm: string): Promise<ShopItemEntity[]> {
-    console.log(searchTerm);
-    return await ShopItem.find({
-      select: ['id', 'price'],
-      where: {
-        name: searchTerm,
-      },
-      order: {
-        price: 'ASC',
-      },
-    });
+    const { count } = await this.dataSource
+      .createQueryBuilder()
+      .select('COUNT(shopItem.id)', 'count')
+      .from(ShopItem, 'shopItem')
+      .getRawOne();
+    console.log({ count });
+    return await this.dataSource
+      .createQueryBuilder()
+      .select('shopItem')
+      .from(ShopItem, 'shopItem')
+      .where('shopItem.description LIKE :searchTerm', {
+        searchTerm: `%${searchTerm}%`,
+      })
+      .orderBy('shopItem.id', 'ASC')
+      .skip(3)
+      .take(5)
+      .getMany();
   }
 }
